@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 
-export async function POST() {
-  const response = NextResponse.json({
-    success: true,
-    message: "Logged out successfully",
-  });
+export async function POST(request: Request) {
+  const url = new URL("/sign-in", request.url);
+
+  const response = NextResponse.redirect(url);
 
   response.cookies.set("auth_token", "", {
     httpOnly: true,

@@ -13,8 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Waste Wise",
-  description: "Smart waste management platform.",
+  title: {
+    default: "SmallBiz",
+    template: "%s | SmallBiz",
+  },
+  description:
+    "Create and manage your online store with SmallBiz.",
 };
 
 export default function RootLayout({
@@ -27,7 +31,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen bg-gray-50">
+        {children}
+      </body>
     </html>
   );
 }
+
