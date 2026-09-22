@@ -54,19 +54,15 @@ export default function PaymentSuccessPage() {
         window.location.search
       );
 
-    const orderId =
-      searchParams.get(
-        "orderId"
-      );
+    const orderIdParam = searchParams.get("orderId");
 
-    if (!orderId) {
-      setError(
-        "Order ID is missing."
-      );
+if (!orderIdParam) {
+  setError("Order ID is missing.");
+  setLoading(false);
+  return;
+}
 
-      setLoading(false);
-      return;
-    }
+const orderId: string = orderIdParam;
 
     let attempts = 0;
 

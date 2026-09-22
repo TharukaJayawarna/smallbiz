@@ -69,12 +69,9 @@ export async function GET(
     // TENANT ID
     // -----------------------------------------
 
-    const businessId =
-      user.businessId instanceof mongoose.Types.ObjectId
-        ? user.businessId
-        : new mongoose.Types.ObjectId(
-            user.businessId.toString()
-          );
+    const businessId = new mongoose.Types.ObjectId(
+  String(user.businessId)
+);
 
     // -----------------------------------------
     // RANGE

@@ -69,13 +69,13 @@ export default async function ShopPage({ params }: ShopPageProps) {
     .sort({ name: 1 })
     .lean();
 
-  const products = await Product.find({
-    businessId: business._id,
-    isActive: true,
-  })
-    .populate("categoryId", "name")
-    .sort({ createdAt: -1 })
-    .lean();
+const products = (await Product.find({
+  businessId: business._id,
+  isActive: true,
+})
+  .populate("categoryId", "name")
+  .sort({ createdAt: -1 })
+  .lean()) as any[];
 
   const theme = business.theme || {
     primaryColor: "#111827",
