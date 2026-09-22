@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navItems = [
+export const navItems = [
   {
     label: "Dashboard",
     href: "/dashboard",
@@ -23,6 +23,7 @@ const navItems = [
       </svg>
     ),
   },
+
   {
     label: "Products",
     href: "/dashboard/products",
@@ -42,6 +43,7 @@ const navItems = [
       </svg>
     ),
   },
+
   {
     label: "Categories",
     href: "/dashboard/categories",
@@ -59,6 +61,7 @@ const navItems = [
       </svg>
     ),
   },
+
   {
     label: "Orders",
     href: "/dashboard/orders",
@@ -79,7 +82,7 @@ const navItems = [
   },
 ];
 
-const storeItems = [
+export const storeItems = [
   {
     label: "Settings",
     href: "/dashboard/settings",
@@ -97,6 +100,7 @@ const storeItems = [
       </svg>
     ),
   },
+
   {
     label: "Store Customization",
     href: "/dashboard/settings/customization",
@@ -119,58 +123,77 @@ const storeItems = [
   },
 ];
 
-export default function DashboardNav() {
-  const pathname = usePathname();
-
-  const isActive = (href: string) => {
+/**
+ * Shared active-state logic
+ * Used by both desktop and mobile navigation.
+ */
+export const isDashboardNavActive = (
+  pathname: string,
+  href: string
+) => {
+  // Dashboard only matches exactly
   if (href === "/dashboard") {
     return pathname === "/dashboard";
   }
 
-  // Store Customization should only activate itself
+  // Store Customization only matches itself
   if (href === "/dashboard/settings/customization") {
     return pathname === "/dashboard/settings/customization";
   }
 
-  // Settings should not stay active on child pages
+  // Settings should NOT remain active on customization page
   if (href === "/dashboard/settings") {
     return pathname === "/dashboard/settings";
   }
 
+  // Other pages can match their child routes
   return pathname === href || pathname.startsWith(`${href}/`);
 };
 
+export default function DashboardNav() {
+  const pathname = usePathname();
+
   const linkClass = (href: string) =>
     `group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
-      isActive(href)
+      isDashboardNavActive(pathname, href)
         ? "bg-slate-900 text-white shadow-sm"
         : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
     }`;
 
   return (
     <>
+      {/* Main Menu */}
       <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
         Main Menu
       </p>
 
       <nav className="space-y-1.5">
         {navItems.map((item) => (
-          <Link key={item.href} href={item.href} className={linkClass(item.href)}>
+          <Link
+            key={item.href}
+            href={item.href}
+            className={linkClass(item.href)}
+          >
             {item.icon}
-            {item.label}
+            <span>{item.label}</span>
           </Link>
         ))}
       </nav>
 
+      {/* Store */}
       <p className="mb-3 mt-9 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
         Store
       </p>
 
       <nav className="space-y-1.5">
         {storeItems.map((item) => (
-          <Link key={item.href} href={item.href} className={linkClass(item.href)}>
+          <Link
+            key={item.href}
+            href={item.href}
+            className={linkClass(item.href)}
+          >
             {item.icon}
-            {item.label}
+            <span>{item.label}</span>
           </Link>
         ))}
       </nav>

@@ -6,6 +6,11 @@ export interface IUser extends Document {
   password: string;
   role: "OWNER" | "ADMIN";
   businessId?: mongoose.Types.ObjectId;
+
+  // Password reset fields
+  resetPasswordToken?: string | null;
+  resetPasswordExpires?: Date | null;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -41,6 +46,18 @@ const UserSchema = new Schema<IUser>(
     businessId: {
       type: Schema.Types.ObjectId,
       ref: "Business",
+    },
+
+    // Password reset token
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
+
+    // Password reset token expiry
+    resetPasswordExpires: {
+      type: Date,
+      default: null,
     },
   },
   {

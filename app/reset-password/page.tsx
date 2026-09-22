@@ -1,57 +1,83 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 
-export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
+export default function ResetPasswordPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const token = searchParams.get("token");
+
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!token) {
+      setError("Invalid or missing password reset link.");
+    }
+  }, [token]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    setLoading(true);
     setError("");
 
+    if (!token) {
+      setError("Invalid or missing password reset link.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const response = await fetch("/api/auth/forgot-password", {
+      const response = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email.trim().toLowerCase(),
+          token,
+          password,
         }),
       });
 
       const contentType = response.headers.get("content-type");
 
       if (!contentType?.includes("application/json")) {
-        const text = await response.text();
-
-        console.error("Non-JSON API response:", {
-          status: response.status,
-          response: text,
-        });
-
-        throw new Error(
-          `Server returned ${response.status}. Please check the API route.`
-        );
+        throw new Error("Server returned an invalid response.");
       }
 
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        setError(data.message || "Unable to send reset email.");
+        setError(data.message || "Unable to reset password.");
         return;
       }
 
-      setSent(true);
+      setSuccess(true);
+
+      setTimeout(() => {
+        router.push("/sign-in");
+      }, 2000);
     } catch (error) {
-      console.error("Forgot password error:", error);
+      console.error("Reset password error:", error);
 
       setError(
         error instanceof Error
@@ -98,14 +124,14 @@ export default function ForgotPasswordPage() {
             </Link>
 
             <p className="mt-3 text-sm text-gray-500">
-              Get back into your account
+              Create a new password
             </p>
           </div>
 
           {/* Card */}
           <div className="rounded-3xl border border-gray-200/80 bg-white/95 p-6 shadow-[0_20px_70px_rgba(0,0,0,0.08)] backdrop-blur sm:p-8">
 
-            {!sent ? (
+            {!success ? (
               <>
                 <div className="mb-7">
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100">
@@ -115,32 +141,30 @@ export default function ForgotPasswordPage() {
                       className="h-6 w-6 text-gray-900"
                     >
                       <rect
-                        x="4"
-                        y="6"
-                        width="16"
-                        height="12"
+                        x="5"
+                        y="10"
+                        width="14"
+                        height="10"
                         rx="2"
                         stroke="currentColor"
                         strokeWidth="1.8"
                       />
                       <path
-                        d="M5 7L12 13L19 7"
+                        d="M8 10V7.5C8 5.57 9.57 4 11.5 4H12.5C14.43 4 16 5.57 16 7.5V10"
                         stroke="currentColor"
                         strokeWidth="1.8"
                         strokeLinecap="round"
-                        strokeLinejoin="round"
                       />
                     </svg>
                   </div>
 
                   <h1 className="text-2xl font-bold tracking-tight text-gray-950 sm:text-3xl">
-                    Forgot your password?
+                    Reset your password
                   </h1>
 
                   <p className="mt-2 text-sm leading-6 text-gray-500">
-                    No worries. Enter the email address associated with your
-                    account and we&apos;ll send you instructions to reset your
-                    password.
+                    Enter your new password below. Make sure it is at least
+                    6 characters long.
                   </p>
                 </div>
 
@@ -153,48 +177,56 @@ export default function ForgotPasswordPage() {
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
                     <label
-                      htmlFor="email"
+                      htmlFor="password"
                       className="mb-2 block text-sm font-semibold text-gray-800"
                     >
-                      Email address
+                      New password
                     </label>
 
                     <input
-                      id="email"
-                      type="email"
+                      id="password"
+                      type="password"
                       required
-                      autoComplete="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="you@example.com"
+                      minLength={6}
+                      autoComplete="new-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter new password"
+                      className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50/70 px-4 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 hover:border-gray-300 focus:border-gray-900 focus:bg-white focus:ring-4 focus:ring-gray-900/5"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="confirmPassword"
+                      className="mb-2 block text-sm font-semibold text-gray-800"
+                    >
+                      Confirm password
+                    </label>
+
+                    <input
+                      id="confirmPassword"
+                      type="password"
+                      required
+                      minLength={6}
+                      autoComplete="new-password"
+                      value={confirmPassword}
+                      onChange={(e) =>
+                        setConfirmPassword(e.target.value)
+                      }
+                      placeholder="Confirm new password"
                       className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50/70 px-4 text-sm text-gray-900 outline-none transition-all placeholder:text-gray-400 hover:border-gray-300 focus:border-gray-900 focus:bg-white focus:ring-4 focus:ring-gray-900/5"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    disabled={loading}
-                    className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gray-950 px-4 text-sm font-semibold text-white shadow-lg shadow-gray-950/10 transition-all hover:-translate-y-0.5 hover:bg-black disabled:cursor-not-allowed disabled:translate-y-0 disabled:opacity-60"
+                    disabled={loading || !token}
+                    className="flex h-12 w-full items-center justify-center rounded-xl bg-gray-950 px-4 text-sm font-semibold text-white shadow-lg shadow-gray-950/10 transition-all hover:-translate-y-0.5 hover:bg-black disabled:cursor-not-allowed disabled:translate-y-0 disabled:opacity-60"
                   >
                     {loading
-                      ? "Sending instructions..."
-                      : "Send reset link"}
-
-                    {!loading && (
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                      >
-                        <path
-                          d="M5 12H19M13 6L19 12L13 18"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    )}
+                      ? "Updating password..."
+                      : "Reset password"}
                   </button>
                 </form>
 
@@ -226,22 +258,19 @@ export default function ForgotPasswordPage() {
                 </div>
 
                 <h1 className="text-2xl font-bold text-gray-950">
-                  Check your email
+                  Password updated
                 </h1>
 
                 <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-gray-500">
-                  If an account exists for{" "}
-                  <span className="font-semibold text-gray-800">
-                    {email}
-                  </span>
-                  , you&apos;ll receive password reset instructions shortly.
+                  Your password has been reset successfully. Redirecting
+                  you to sign in...
                 </p>
 
                 <Link
                   href="/sign-in"
                   className="mt-7 flex h-12 w-full items-center justify-center rounded-xl bg-gray-950 text-sm font-semibold text-white transition hover:bg-black"
                 >
-                  Back to sign in
+                  Go to sign in
                 </Link>
               </div>
             )}

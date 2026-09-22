@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 
@@ -63,36 +64,22 @@ export default function SignUpPage() {
 
       <div className="relative flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <div className="w-full max-w-[500px]">
-
           {/* Brand */}
           <div className="mb-8 text-center">
             <Link
               href="/"
               className="inline-flex items-center gap-3 transition-opacity hover:opacity-80"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-black text-white shadow-lg shadow-black/10">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M4 19V9.5L12 4L20 9.5V19"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M8 19V13H16V19"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
+              <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-white shadow-lg">
+                              <Image
+                                src="/icon.jpeg"
+                                alt="SmallBiz"
+                                width={44}
+                                height={44}
+                                className="h-full w-full object-contain p-1"
+                                priority
+                              />
+                            </div>
 
               <span className="text-2xl font-bold tracking-tight text-gray-950">
                 SmallBiz
@@ -106,7 +93,6 @@ export default function SignUpPage() {
 
           {/* Card */}
           <div className="rounded-3xl border border-gray-200/80 bg-white/95 p-6 shadow-[0_20px_70px_rgba(0,0,0,0.08)] backdrop-blur sm:p-8">
-
             {/* Heading */}
             <div className="mb-7">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-100">
@@ -138,8 +124,8 @@ export default function SignUpPage() {
               </h1>
 
               <p className="mt-2 text-sm leading-6 text-gray-500">
-                Create your account and get your business online in just a
-                few steps.
+                Create your account and get your business online in just a few
+                steps.
               </p>
             </div>
 
@@ -173,7 +159,6 @@ export default function SignUpPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
-
               {/* Name */}
               <div>
                 <label
@@ -480,13 +465,11 @@ export default function SignUpPage() {
                         strokeLinecap="round"
                       />
                     </svg>
-
                     Creating your store...
                   </>
                 ) : (
                   <>
                     Create my store
-
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"

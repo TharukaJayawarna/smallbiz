@@ -17,8 +17,10 @@ export const metadata: Metadata = {
     default: "SmallBiz",
     template: "%s | SmallBiz",
   },
-  description:
-    "Create and manage your online store with SmallBiz.",
+  description: "Create and manage your online store with SmallBiz.",
+  icons: {
+    icon: "/icon.jpeg",
+  },
 };
 
 export default function RootLayout({
@@ -37,4 +39,3 @@ export default function RootLayout({
     </html>
   );
 }
-

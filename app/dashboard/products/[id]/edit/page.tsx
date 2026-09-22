@@ -164,12 +164,12 @@ export default function EditProductPage() {
         }
 
         setImages((current) => [
-          ...current,
-          {
-            url: data.image.url,
-            publicId: data.image.publicId,
-          },
-        ]);
+  ...current,
+  {
+    url: data.url,
+    publicId: data.publicId,
+  },
+]);
       }
     } catch (error) {
       console.error(error);

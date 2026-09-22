@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 
@@ -62,29 +63,16 @@ export default function SignInPage() {
               href="/"
               className="inline-flex items-center gap-3 transition-opacity hover:opacity-80"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-black text-white shadow-lg shadow-black/10">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M4 19V9.5L12 4L20 9.5V19"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M8 19V13H16V19"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
+              <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-white shadow-lg">
+                              <Image
+                                src="/icon.jpeg"
+                                alt="SmallBiz"
+                                width={44}
+                                height={44}
+                                className="h-full w-full object-contain p-1"
+                                priority
+                              />
+                            </div>
 
               <span className="text-2xl font-bold tracking-tight text-gray-950">
                 SmallBiz
@@ -222,11 +210,11 @@ export default function SignInPage() {
                   </label>
 
                   <Link
-  href="/forgot-password"
-  className="text-xs font-semibold text-gray-500 transition-colors hover:text-gray-950"
->
-  Forgot password?
-</Link>
+                    href="/forgot-password"
+                    className="text-xs font-semibold text-gray-500 transition-colors hover:text-gray-950"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
 
                 <div className="group relative">
@@ -308,7 +296,6 @@ export default function SignInPage() {
                         strokeLinecap="round"
                       />
                     </svg>
-
                     Signing in...
                   </>
                 ) : (
